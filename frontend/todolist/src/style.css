@@ -1,0 +1,8 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+.nav-items{
+    @apply text-lg font-semibold 
+}
