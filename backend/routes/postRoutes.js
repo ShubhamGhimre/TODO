@@ -17,7 +17,7 @@ router.post("/create", fetchuser, async (req, res) => {
         description: req.body.description,
         completed: req.body.completed || false,
         posted_by: req.user._id, // user id from middleware
-        tenantID: req.user.tenantID,
+        // tenantID: req.user.tenantID,
       });
       await post.save();
       console.log("Data saved successfully");

@@ -21,10 +21,6 @@ const Post = mongoose.model("Post", {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Users",
     },
-    tenantID: {
-      type: String,
-      required: true,
-    }
   });
 
   module.exports = Post;

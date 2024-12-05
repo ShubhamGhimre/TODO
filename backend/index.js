@@ -8,7 +8,6 @@ const cookieParser = require("cookie-parser");
 const authRoutes = require("./routes/authRoutes");
 const postRoutes = require("./routes/postRoutes");
 const adminRoutes = require("./routes/adminRoutes");
-const tenantMiddleWare = require("./middleware/TenantMiddleWare");
 
 const { fetchuser, authorizeAdmin } = require("./middleware/authMiddleware");
 const Users = require("./models/User");
@@ -39,21 +38,14 @@ app.get("/", (req, res) => {
   res.send("Express app is running");
 });
 
-app.get("/get-user",tenantMiddleWare  , fetchuser, authorizeAdmin, async (req, res) => {
+app.get("/get-user", fetchuser, authorizeAdmin, async (req, res) => {
   res.send(req.user);
 });
 
 
-app.get("/get-role", tenantMiddleWare ,fetchuser, async (req, res) => {
-  try {
-    const user = await Users.findById(req.user._id);
-    res.json({
-      success: true,
-      role: user.role,
-    });
-  } catch (error) {
-    res.status(500).json({ success: false, message: "Failed to fetch role" });
-  }
+app.get("/get-role", fetchuser, (req, res) => {
+  console.log("User in /get-role:", req.user);
+  res.status(200).send({ role: req.user.role });
 });
 
 app.use("/auth", authRoutes); // Base route for auth
@@ -63,15 +55,15 @@ app.use("/admin", adminRoutes); // Base route for users
 app.post("/logout", (req, res) => {
   res.clearCookie("authToken", {
     httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
+    secure: true,
     sameSite: "strict",
   });
 
-  res.clearCookie("tenantId", {
-    httpOnly: false,
-    secure: process.env.NODE_ENV === "production",
-    sameSite: "strict",
-  });
+  // res.clearCookie("tenantId", {
+  //   httpOnly: false,
+  //   secure: process.env.NODE_ENV === "production",
+  //   sameSite: "strict",
+  // });
   res.status(200).json({ success: true, message: "Logged out successfully" });
 });
 

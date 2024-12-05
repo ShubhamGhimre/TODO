@@ -22,10 +22,6 @@ const Users = mongoose.model("Users", {
       type: String,
       default: "user",
     },
-    tenantID: {
-      type: String,
-      required: true,
-    }
   });
   
   module.exports = Users;
